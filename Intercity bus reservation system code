@@ -1,0 +1,2653 @@
+import java.io.*;
+import java.util.*;
+
+/*
+ * ============================================================
+ * SMART RIDE INDIA
+ * INTERCITY BUS RESERVATION SYSTEM
+ * ============================================================
+ *
+ * Single-file Java project
+ *
+ * Concepts covered:
+ * - Variables
+ * - Data Types
+ * - Operators
+ * - Conditional Statements
+ * - Loops
+ * - 1D Arrays
+ * - 2D Arrays
+ * - Methods
+ * - Constructors
+ * - Strings
+ * - OOP
+ * - Encapsulation
+ * - Inheritance
+ * - Abstraction
+ * - Polymorphism
+ * - Exception Handling
+ * - File Handling
+ * - Searching
+ * ============================================================
+ */
+
+public class Main {
+
+    // =========================================================
+    // GLOBAL OBJECTS AND DATA
+    // =========================================================
+
+    static Scanner sc = new Scanner(System.in);
+
+    // 1D array of Bus objects
+    static Bus[] buses = new Bus[10];
+
+    // ArrayLists for dynamic data
+    static ArrayList<Passenger> passengers = new ArrayList<>();
+    static ArrayList<Ticket> tickets = new ArrayList<>();
+    static ArrayList<Driver> drivers = new ArrayList<>();
+    static ArrayList<Complaint> complaints = new ArrayList<>();
+    static ArrayList<Incident> incidents = new ArrayList<>();
+    static ArrayList<Maintenance> maintenanceRecords = new ArrayList<>();
+
+    // ID counters
+    static int passengerCounter = 1001;
+    static int ticketCounter = 5001;
+    static int driverCounter = 2001;
+    static int complaintCounter = 3001;
+    static int incidentCounter = 4001;
+    static int maintenanceCounter = 6001;
+
+    // =========================================================
+    // MAIN METHOD
+    // =========================================================
+
+    public static void main(String[] args) {
+
+        initializeFiles();
+        initializeBuses();
+        initializeDrivers();
+
+        System.out.println();
+        System.out.println("=================================================");
+        System.out.println("              SMART RIDE INDIA");
+        System.out.println("       INTERCITY BUS RESERVATION SYSTEM");
+        System.out.println("=================================================");
+        System.out.println("Welcome to Smart Ride India!");
+
+        boolean running = true;
+
+        while (running) {
+
+            displayMainMenu();
+
+            int choice = readInt("Enter your choice: ");
+
+            try {
+
+                switch (choice) {
+
+                    case 1:
+                        passengerManagement();
+                        break;
+
+                    case 2:
+                        busManagement();
+                        break;
+
+                    case 3:
+                        smartBusRecommendation();
+                        break;
+
+                    case 4:
+                        bookTicket();
+                        break;
+
+                    case 5:
+                        viewTicket();
+                        break;
+
+                    case 6:
+                        cancelTicket();
+                        break;
+
+                    case 7:
+                        driverManagement();
+                        break;
+
+                    case 8:
+                        incidentManagement();
+                        break;
+
+                    case 9:
+                        complaintManagement();
+                        break;
+
+                    case 10:
+                        maintenanceManagement();
+                        break;
+
+                    case 11:
+                        reports();
+                        break;
+
+                    case 12:
+                        viewSavedRecords();
+                        break;
+
+                    case 13:
+                        searchBus();
+                        break;
+
+                    case 14:
+                        sortingDemo();
+                        break;
+
+                    case 0:
+                        running = false;
+                        System.out.println();
+                        System.out.println("Thank you for using Smart Ride India!");
+                        System.out.println("Have a safe journey!");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+
+            } catch (Exception e) {
+
+                System.out.println(
+                        "An unexpected error occurred: "
+                                + e.getMessage()
+                );
+            }
+        }
+
+        sc.close();
+    }
+
+    // =========================================================
+    // MAIN MENU
+    // =========================================================
+
+    static void displayMainMenu() {
+
+        System.out.println();
+        System.out.println("=================================================");
+        System.out.println("                  MAIN MENU");
+        System.out.println("=================================================");
+
+        System.out.println("1.  Passenger Management");
+        System.out.println("2.  Bus Availability & Seat Layout");
+        System.out.println("3.  Smart Bus Recommendation");
+        System.out.println("4.  Book Ticket");
+        System.out.println("5.  View Ticket");
+        System.out.println("6.  Cancel Ticket");
+        System.out.println("7.  Driver Management");
+        System.out.println("8.  Journey & Incident Management");
+        System.out.println("9.  Complaint & Resolution");
+        System.out.println("10. Maintenance Management");
+        System.out.println("11. Reports");
+        System.out.println("12. View Saved Records");
+        System.out.println("13. Search Bus");
+        System.out.println("14. Sort Buses by Fare");
+        System.out.println("0.  Exit");
+
+        System.out.println("=================================================");
+    }
+
+    // =========================================================
+    // INITIALIZE FILE SYSTEM
+    // =========================================================
+
+    static void initializeFiles() {
+
+        File folder = new File("data");
+
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+    }
+
+    // =========================================================
+    // INITIALIZE BUSES
+    // =========================================================
+
+    static void initializeBuses() {
+
+        buses[0] = new Bus(
+                "B101",
+                "Hyderabad",
+                "Vijayawada",
+                "AC Sleeper",
+                "9:00 AM",
+                "9:00 PM",
+                1450,
+                26
+        );
+
+        buses[1] = new Bus(
+                "B102",
+                "Hyderabad",
+                "Vijayawada",
+                "AC Seater",
+                "9:30 AM",
+                "9:30 PM",
+                1200,
+                18
+        );
+
+        buses[2] = new Bus(
+                "B103",
+                "Hyderabad",
+                "Warangal",
+                "Non AC Sleeper",
+                "10:00 AM",
+                "3:00 PM",
+                950,
+                9
+        );
+
+        buses[3] = new Bus(
+                "B104",
+                "Hyderabad",
+                "Bengaluru",
+                "AC Sleeper",
+                "10:30 AM",
+                "10:30 PM",
+                1450,
+                31
+        );
+
+        buses[4] = new Bus(
+                "B105",
+                "Hyderabad",
+                "Chennai",
+                "Non AC Sleeper",
+                "11:00 AM",
+                "11:00 PM",
+                950,
+                39
+        );
+
+        buses[5] = new Bus(
+                "B201",
+                "Delhi",
+                "Jaipur",
+                "AC Sleeper",
+                "9:00 PM",
+                "5:00 AM",
+                1450,
+                1
+        );
+
+        buses[6] = new Bus(
+                "B202",
+                "Delhi",
+                "Agra",
+                "AC Seater",
+                "9:30 PM",
+                "1:00 AM",
+                1200,
+                13
+        );
+
+        buses[7] = new Bus(
+                "B301",
+                "Mumbai",
+                "Pune",
+                "AC Sleeper",
+                "10:00 PM",
+                "2:00 AM",
+                1450,
+                6
+        );
+
+        buses[8] = new Bus(
+                "B401",
+                "Chennai",
+                "Bengaluru",
+                "Non AC Sleeper",
+                "10:30 PM",
+                "6:30 AM",
+                950,
+                21
+        );
+
+        buses[9] = new Bus(
+                "B501",
+                "Bengaluru",
+                "Hyderabad",
+                "AC Seater",
+                "11:00 PM",
+                "9:00 AM",
+                1200,
+                20
+        );
+    }
+
+    // =========================================================
+    // INITIALIZE DRIVERS
+    // =========================================================
+
+    static void initializeDrivers() {
+
+        drivers.add(
+                new Driver(
+                        "D2001",
+                        "Ramesh",
+                        "9876543210",
+                        "TS123456",
+                        "B101"
+                )
+        );
+
+        drivers.add(
+                new Driver(
+                        "D2002",
+                        "Suresh",
+                        "9876543211",
+                        "TS123457",
+                        "B102"
+                )
+        );
+
+        drivers.add(
+                new Driver(
+                        "D2003",
+                        "Mahesh",
+                        "9876543212",
+                        "TS123458",
+                        "B103"
+                )
+        );
+    }
+
+    // =========================================================
+    // PASSENGER MANAGEMENT
+    // =========================================================
+
+    static void passengerManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== PASSENGER MANAGEMENT ==========");
+            System.out.println("1. Add Passenger");
+            System.out.println("2. View Passengers");
+            System.out.println("3. Search Passenger");
+            System.out.println("0. Back");
+
+            int choice = readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    addPassenger();
+                    break;
+
+                case 2:
+                    viewPassengers();
+                    break;
+
+                case 3:
+                    searchPassenger();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static Passenger addPassenger() {
+
+        System.out.println();
+        System.out.println("---------- ADD PASSENGER ----------");
+
+        String name = readString("Enter name: ");
+        String phone = readString("Enter phone: ");
+        int age = readInt("Enter age: ");
+        String gender = readString("Enter gender: ");
+
+        Passenger passenger =
+                new Passenger(
+                        name,
+                        phone,
+                        age,
+                        gender
+                );
+
+        passengers.add(passenger);
+
+        passengerCounter++;
+
+        saveToFile(
+                "passengers.txt",
+                passenger.toString()
+        );
+
+        System.out.println("Passenger added successfully.");
+
+        return passenger;
+    }
+
+    static void viewPassengers() {
+
+        System.out.println();
+        System.out.println("========== PASSENGER LIST ==========");
+
+        if (passengers.isEmpty()) {
+
+            System.out.println("No passengers found.");
+            return;
+        }
+
+        for (Passenger passenger : passengers) {
+            passenger.displayDetails();
+        }
+    }
+
+    static void searchPassenger() {
+
+        String name =
+                readString("Enter passenger name: ");
+
+        boolean found = false;
+
+        for (Passenger passenger : passengers) {
+
+            if (passenger.getName()
+                    .equalsIgnoreCase(name)) {
+
+                passenger.displayDetails();
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Passenger not found.");
+        }
+    }
+
+    // =========================================================
+    // BUS MANAGEMENT
+    // =========================================================
+
+    static void busManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== BUS MANAGEMENT ==========");
+            System.out.println("1. View All Buses");
+            System.out.println("2. View Seat Layout");
+            System.out.println("3. Search Bus");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    viewAllBuses();
+                    break;
+
+                case 2:
+                    viewSeats();
+                    break;
+
+                case 3:
+                    searchBus();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static void viewAllBuses() {
+
+        System.out.println();
+        System.out.println("========== AVAILABLE BUSES ==========");
+
+        for (Bus bus : buses) {
+
+            bus.displayDetails();
+        }
+    }
+
+    static void viewSeats() {
+
+        String busId =
+                readString("Enter Bus ID: ");
+
+        Bus bus = findBus(busId);
+
+        if (bus == null) {
+
+            System.out.println("Bus not found.");
+            return;
+        }
+
+        bus.displaySeatLayout();
+    }
+
+    static Bus findBus(String busId) {
+
+        for (Bus bus : buses) {
+
+            if (bus.getBusId()
+                    .equalsIgnoreCase(busId)) {
+
+                return bus;
+            }
+        }
+
+        return null;
+    }
+
+    // =========================================================
+    // SEARCH BUS
+    // =========================================================
+
+    static void searchBus() {
+
+        String source =
+                readString("Enter source: ");
+
+        String destination =
+                readString("Enter destination: ");
+
+        boolean found = false;
+
+        System.out.println();
+        System.out.println("========== SEARCH RESULTS ==========");
+
+        for (Bus bus : buses) {
+
+            if (bus.getSource()
+                    .equalsIgnoreCase(source)
+                    &&
+                    bus.getDestination()
+                    .equalsIgnoreCase(destination)) {
+
+                bus.displayDetails();
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+
+            System.out.println(
+                    "No buses found for this route."
+            );
+        }
+    }
+
+    // =========================================================
+    // SMART BUS RECOMMENDATION
+    // =========================================================
+
+    static void smartBusRecommendation() {
+
+        System.out.println();
+        System.out.println("====== SMART BUS RECOMMENDATION ======");
+
+        String source =
+                readString("Enter source: ");
+
+        String destination =
+                readString("Enter destination: ");
+
+        double budget =
+                readDouble("Enter maximum budget: ");
+
+        Bus bestBus = null;
+
+        double bestScore = -1;
+
+        for (Bus bus : buses) {
+
+            if (!bus.getSource()
+                    .equalsIgnoreCase(source)) {
+
+                continue;
+            }
+
+            if (!bus.getDestination()
+                    .equalsIgnoreCase(destination)) {
+
+                continue;
+            }
+
+            if (bus.getFare() > budget) {
+
+                continue;
+            }
+
+            if (bus.getAvailableSeats() <= 0) {
+
+                continue;
+            }
+
+            double score = 0;
+
+            // More available seats = higher score
+            score += bus.getAvailableSeats();
+
+            // AC bus gets additional comfort score
+            if (bus.getBusType()
+                    .toLowerCase()
+                    .contains("ac")) {
+
+                score += 20;
+            }
+
+            // Lower fare gets better score
+            score +=
+                    (2000 - bus.getFare()) / 100;
+
+            if (score > bestScore) {
+
+                bestScore = score;
+                bestBus = bus;
+            }
+        }
+
+        if (bestBus == null) {
+
+            System.out.println(
+                    "No suitable bus found."
+            );
+
+        } else {
+
+            System.out.println();
+            System.out.println(
+                    "Recommended Bus:"
+            );
+
+            bestBus.displayDetails();
+        }
+    }
+
+    // =========================================================
+    // BOOK TICKET
+    // =========================================================
+
+    static void bookTicket() {
+
+        System.out.println();
+        System.out.println("========== BOOK TICKET ==========");
+
+        String busId =
+                readString("Enter Bus ID: ");
+
+        Bus bus = findBus(busId);
+
+        if (bus == null) {
+
+            System.out.println("Bus not found.");
+            return;
+        }
+
+        if (bus.getAvailableSeats() <= 0) {
+
+            System.out.println(
+                    "No seats available."
+            );
+
+            return;
+        }
+
+        bus.displaySeatLayout();
+
+        int seatNumber =
+                readInt("Enter seat number: ");
+
+        if (seatNumber < 1 ||
+                seatNumber > 50) {
+
+            System.out.println(
+                    "Invalid seat number."
+            );
+
+            return;
+        }
+
+        if (bus.isSeatBooked(seatNumber)) {
+
+            System.out.println(
+                    "Seat already booked."
+            );
+
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Enter Passenger Details");
+
+        String name =
+                readString("Name: ");
+
+        String phone =
+                readString("Phone: ");
+
+        int age =
+                readInt("Age: ");
+
+        String gender =
+                readString("Gender: ");
+
+        Passenger passenger =
+                new Passenger(
+                        name,
+                        phone,
+                        age,
+                        gender
+                );
+
+        passengers.add(passenger);
+
+        double amount =
+                bus.getFare();
+
+        // Senior citizen discount
+        if (age >= 60) {
+
+            amount =
+                    amount * 0.90;
+
+            System.out.println(
+                    "10% senior citizen discount applied."
+            );
+        }
+
+        boolean booked =
+                bus.bookSeat(seatNumber);
+
+        if (!booked) {
+
+            System.out.println(
+                    "Seat booking failed."
+            );
+
+            return;
+        }
+
+        String ticketId =
+                "T" + ticketCounter++;
+
+        Ticket ticket =
+                new Ticket(
+                        ticketId,
+                        passenger,
+                        busId,
+                        seatNumber,
+                        amount
+                );
+
+        tickets.add(ticket);
+
+        saveToFile(
+                "bookings.txt",
+                ticket.toString()
+        );
+
+        System.out.println();
+        System.out.println(
+                "Ticket booked successfully!"
+        );
+
+        ticket.displayTicket();
+    }
+
+    // =========================================================
+    // VIEW TICKET
+    // =========================================================
+
+    static void viewTicket() {
+
+        String ticketId =
+                readString("Enter Ticket ID: ");
+
+        boolean found = false;
+
+        for (Ticket ticket : tickets) {
+
+            if (ticket.getTicketId()
+                    .equalsIgnoreCase(ticketId)) {
+
+                ticket.displayTicket();
+
+                found = true;
+
+                break;
+            }
+        }
+
+        if (!found) {
+
+            System.out.println(
+                    "Ticket not found."
+            );
+        }
+    }
+
+    // =========================================================
+    // CANCEL TICKET
+    // =========================================================
+
+    static void cancelTicket() {
+
+        String ticketId =
+                readString("Enter Ticket ID: ");
+
+        for (Ticket ticket : tickets) {
+
+            if (ticket.getTicketId()
+                    .equalsIgnoreCase(ticketId)) {
+
+                if (ticket.getStatus()
+                        .equals("CANCELLED")) {
+
+                    System.out.println(
+                            "Ticket already cancelled."
+                    );
+
+                    return;
+                }
+
+                Bus bus =
+                        findBus(ticket.getBusId());
+
+                if (bus != null) {
+
+                    bus.cancelSeat(
+                            ticket.getSeatNumber()
+                    );
+                }
+
+                ticket.cancel();
+
+                System.out.println(
+                        "Ticket cancelled successfully."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Ticket not found."
+        );
+    }
+
+    // =========================================================
+    // DRIVER MANAGEMENT
+    // =========================================================
+
+    static void driverManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== DRIVER MANAGEMENT ==========");
+            System.out.println("1. View Drivers");
+            System.out.println("2. Add Driver");
+            System.out.println("3. Assign Driver to Bus");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    viewDrivers();
+                    break;
+
+                case 2:
+                    addDriver();
+                    break;
+
+                case 3:
+                    assignDriver();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println(
+                            "Invalid choice."
+                    );
+            }
+        }
+    }
+
+    static void viewDrivers() {
+
+        System.out.println();
+        System.out.println("========== DRIVER LIST ==========");
+
+        if (drivers.isEmpty()) {
+
+            System.out.println(
+                    "No drivers available."
+            );
+
+            return;
+        }
+
+        for (Driver driver : drivers) {
+
+            driver.displayDetails();
+        }
+    }
+
+    static void addDriver() {
+
+        String name =
+                readString("Driver name: ");
+
+        String phone =
+                readString("Phone: ");
+
+        String license =
+                readString("License number: ");
+
+        String busId =
+                readString("Assigned bus ID: ");
+
+        if (findBus(busId) == null) {
+
+            System.out.println(
+                    "Bus does not exist."
+            );
+
+            return;
+        }
+
+        String driverId =
+                "D" + driverCounter++;
+
+        Driver driver =
+                new Driver(
+                        driverId,
+                        name,
+                        phone,
+                        license,
+                        busId
+                );
+
+        drivers.add(driver);
+
+        System.out.println(
+                "Driver added successfully."
+        );
+    }
+
+    static void assignDriver() {
+
+        String driverId =
+                readString("Enter Driver ID: ");
+
+        String busId =
+                readString("Enter Bus ID: ");
+
+        if (findBus(busId) == null) {
+
+            System.out.println(
+                    "Bus does not exist."
+            );
+
+            return;
+        }
+
+        for (Driver driver : drivers) {
+
+            if (driver.getDriverId()
+                    .equalsIgnoreCase(driverId)) {
+
+                driver.setAssignedBusId(busId);
+
+                System.out.println(
+                        "Driver assigned successfully."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Driver not found."
+        );
+    }
+
+    // =========================================================
+    // INCIDENT MANAGEMENT
+    // =========================================================
+
+    static void incidentManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== INCIDENT MANAGEMENT ==========");
+            System.out.println("1. Report Incident");
+            System.out.println("2. View Incidents");
+            System.out.println("3. Resolve Incident");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    reportIncident();
+                    break;
+
+                case 2:
+                    viewIncidents();
+                    break;
+
+                case 3:
+                    resolveIncident();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println(
+                            "Invalid choice."
+                    );
+            }
+        }
+    }
+
+    static void reportIncident() {
+
+        String busId =
+                readString("Enter Bus ID: ");
+
+        if (findBus(busId) == null) {
+
+            System.out.println(
+                    "Bus not found."
+            );
+
+            return;
+        }
+
+        String description =
+                readString(
+                        "Describe incident: "
+                );
+
+        String incidentId =
+                "I" + incidentCounter++;
+
+        Incident incident =
+                new Incident(
+                        incidentId,
+                        busId,
+                        description
+                );
+
+        incidents.add(incident);
+
+        saveToFile(
+                "incidents.txt",
+                incident.toString()
+        );
+
+        System.out.println(
+                "Incident reported successfully."
+        );
+    }
+
+    static void viewIncidents() {
+
+        if (incidents.isEmpty()) {
+
+            System.out.println(
+                    "No incidents available."
+            );
+
+            return;
+        }
+
+        for (Incident incident : incidents) {
+
+            incident.display();
+        }
+    }
+
+    static void resolveIncident() {
+
+        String id =
+                readString("Enter Incident ID: ");
+
+        for (Incident incident : incidents) {
+
+            if (incident.getIncidentId()
+                    .equalsIgnoreCase(id)) {
+
+                incident.resolve();
+
+                System.out.println(
+                        "Incident resolved."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Incident not found."
+        );
+    }
+
+    // =========================================================
+    // COMPLAINT MANAGEMENT
+    // =========================================================
+
+    static void complaintManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== COMPLAINT MANAGEMENT ==========");
+            System.out.println("1. Register Complaint");
+            System.out.println("2. View Complaints");
+            System.out.println("3. Resolve Complaint");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    registerComplaint();
+                    break;
+
+                case 2:
+                    viewComplaints();
+                    break;
+
+                case 3:
+                    resolveComplaint();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println(
+                            "Invalid choice."
+                    );
+            }
+        }
+    }
+
+    static void registerComplaint() {
+
+        String passengerName =
+                readString("Passenger name: ");
+
+        String description =
+                readString("Complaint: ");
+
+        String complaintId =
+                "C" + complaintCounter++;
+
+        Complaint complaint =
+                new Complaint(
+                        complaintId,
+                        passengerName,
+                        description
+                );
+
+        complaints.add(complaint);
+
+        saveToFile(
+                "complaints.txt",
+                complaint.toString()
+        );
+
+        System.out.println(
+                "Complaint registered successfully."
+        );
+    }
+
+    static void viewComplaints() {
+
+        if (complaints.isEmpty()) {
+
+            System.out.println(
+                    "No complaints available."
+            );
+
+            return;
+        }
+
+        for (Complaint complaint : complaints) {
+
+            complaint.display();
+        }
+    }
+
+    static void resolveComplaint() {
+
+        String id =
+                readString("Enter Complaint ID: ");
+
+        for (Complaint complaint : complaints) {
+
+            if (complaint.getComplaintId()
+                    .equalsIgnoreCase(id)) {
+
+                complaint.resolve();
+
+                System.out.println(
+                        "Complaint resolved."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Complaint not found."
+        );
+    }
+
+    // =========================================================
+    // MAINTENANCE MANAGEMENT
+    // =========================================================
+
+    static void maintenanceManagement() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== MAINTENANCE MANAGEMENT ==========");
+            System.out.println("1. Add Maintenance Record");
+            System.out.println("2. View Maintenance Records");
+            System.out.println("3. Complete Maintenance");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    addMaintenance();
+                    break;
+
+                case 2:
+                    viewMaintenance();
+                    break;
+
+                case 3:
+                    completeMaintenance();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println(
+                            "Invalid choice."
+                    );
+            }
+        }
+    }
+
+    static void addMaintenance() {
+
+        String busId =
+                readString("Bus ID: ");
+
+        if (findBus(busId) == null) {
+
+            System.out.println(
+                    "Bus not found."
+            );
+
+            return;
+        }
+
+        String type =
+                readString(
+                        "Maintenance type: "
+                );
+
+        String description =
+                readString(
+                        "Description: "
+                );
+
+        String recordId =
+                "M" + maintenanceCounter++;
+
+        Maintenance record =
+                new Maintenance(
+                        recordId,
+                        busId,
+                        type,
+                        description
+                );
+
+        maintenanceRecords.add(record);
+
+        saveToFile(
+                "maintenance.txt",
+                record.toString()
+        );
+
+        System.out.println(
+                "Maintenance record added."
+        );
+    }
+
+    static void viewMaintenance() {
+
+        if (maintenanceRecords.isEmpty()) {
+
+            System.out.println(
+                    "No maintenance records."
+            );
+
+            return;
+        }
+
+        for (Maintenance record :
+                maintenanceRecords) {
+
+            record.display();
+        }
+    }
+
+    static void completeMaintenance() {
+
+        String id =
+                readString(
+                        "Enter maintenance ID: "
+                );
+
+        for (Maintenance record :
+                maintenanceRecords) {
+
+            if (record.getRecordId()
+                    .equalsIgnoreCase(id)) {
+
+                record.complete();
+
+                System.out.println(
+                        "Maintenance completed."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println(
+                "Maintenance record not found."
+        );
+    }
+
+    // =========================================================
+    // REPORTS
+    // =========================================================
+
+    static void reports() {
+
+        int totalSeats = 0;
+        int occupiedSeats = 0;
+        double totalRevenue = 0;
+
+        for (Bus bus : buses) {
+
+            totalSeats +=
+                    bus.getTotalSeats();
+
+            occupiedSeats +=
+                    bus.getOccupiedSeats();
+        }
+
+        for (Ticket ticket : tickets) {
+
+            if (ticket.getStatus()
+                    .equals("CONFIRMED")) {
+
+                totalRevenue +=
+                        ticket.getAmount();
+            }
+        }
+
+        int availableSeats =
+                totalSeats - occupiedSeats;
+
+        System.out.println();
+        System.out.println("==========================================");
+        System.out.println("              SYSTEM REPORT");
+        System.out.println("==========================================");
+
+        System.out.println(
+                "Total Buses         : "
+                        + buses.length
+        );
+
+        System.out.println(
+                "Total Seats         : "
+                        + totalSeats
+        );
+
+        System.out.println(
+                "Occupied Seats      : "
+                        + occupiedSeats
+        );
+
+        System.out.println(
+                "Available Seats     : "
+                        + availableSeats
+        );
+
+        System.out.println(
+                "Total Passengers    : "
+                        + passengers.size()
+        );
+
+        System.out.println(
+                "Total Tickets       : "
+                        + tickets.size()
+        );
+
+        System.out.println(
+                "Confirmed Tickets   : "
+                        + countConfirmedTickets()
+        );
+
+        System.out.println(
+                "Cancelled Tickets   : "
+                        + countCancelledTickets()
+        );
+
+        System.out.println(
+                "Total Drivers       : "
+                        + drivers.size()
+        );
+
+        System.out.println(
+                "Total Complaints    : "
+                        + complaints.size()
+        );
+
+        System.out.println(
+                "Total Incidents     : "
+                        + incidents.size()
+        );
+
+        System.out.println(
+                "Maintenance Records : "
+                        + maintenanceRecords.size()
+        );
+
+        System.out.println(
+                "Total Revenue       : ₹"
+                        + totalRevenue
+        );
+
+        System.out.println("==========================================");
+    }
+
+    static int countConfirmedTickets() {
+
+        int count = 0;
+
+        for (Ticket ticket : tickets) {
+
+            if (ticket.getStatus()
+                    .equals("CONFIRMED")) {
+
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    static int countCancelledTickets() {
+
+        int count = 0;
+
+        for (Ticket ticket : tickets) {
+
+            if (ticket.getStatus()
+                    .equals("CANCELLED")) {
+
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    // =========================================================
+    // FILE RECORDS
+    // =========================================================
+
+    static void viewSavedRecords() {
+
+        while (true) {
+
+            System.out.println();
+            System.out.println("========== SAVED RECORDS ==========");
+            System.out.println("1. Passengers");
+            System.out.println("2. Bookings");
+            System.out.println("3. Complaints");
+            System.out.println("4. Incidents");
+            System.out.println("5. Maintenance");
+            System.out.println("0. Back");
+
+            int choice =
+                    readInt("Enter choice: ");
+
+            switch (choice) {
+
+                case 1:
+                    displayFile(
+                            "passengers.txt"
+                    );
+                    break;
+
+                case 2:
+                    displayFile(
+                            "bookings.txt"
+                    );
+                    break;
+
+                case 3:
+                    displayFile(
+                            "complaints.txt"
+                    );
+                    break;
+
+                case 4:
+                    displayFile(
+                            "incidents.txt"
+                    );
+                    break;
+
+                case 5:
+                    displayFile(
+                            "maintenance.txt"
+                    );
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println(
+                            "Invalid choice."
+                    );
+            }
+        }
+    }
+
+    // =========================================================
+    // FILE WRITING
+    // =========================================================
+
+    static void saveToFile(
+            String fileName,
+            String data) {
+
+        try {
+
+            File folder =
+                    new File("data");
+
+            if (!folder.exists()) {
+                folder.mkdir();
+            }
+
+            FileWriter writer =
+                    new FileWriter(
+                            "data/" + fileName,
+                            true
+                    );
+
+            BufferedWriter buffer =
+                    new BufferedWriter(writer);
+
+            buffer.write(data);
+            buffer.newLine();
+
+            buffer.close();
+            writer.close();
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "File writing error: "
+                            + e.getMessage()
+            );
+        }
+    }
+
+    // =========================================================
+    // FILE READING
+    // =========================================================
+
+    static void displayFile(
+            String fileName) {
+
+        File file =
+                new File(
+                        "data/" + fileName
+                );
+
+        if (!file.exists()) {
+
+            System.out.println(
+                    "No saved records found."
+            );
+
+            return;
+        }
+
+        try {
+
+            FileReader reader =
+                    new FileReader(file);
+
+            BufferedReader buffer =
+                    new BufferedReader(reader);
+
+            String line;
+
+            System.out.println();
+            System.out.println(
+                    "---------- SAVED DATA ----------"
+            );
+
+            while ((line =
+                    buffer.readLine()) != null) {
+
+                System.out.println(line);
+            }
+
+            buffer.close();
+            reader.close();
+
+        } catch (IOException e) {
+
+            System.out.println(
+                    "File reading error: "
+                            + e.getMessage()
+            );
+        }
+    }
+
+    // =========================================================
+    // SORTING
+    // =========================================================
+
+    static void sortingDemo() {
+
+        // Copy array so original bus order is unchanged
+        Bus[] sortedBuses =
+                Arrays.copyOf(
+                        buses,
+                        buses.length
+                );
+
+        // Bubble sort
+        for (int i = 0;
+             i < sortedBuses.length - 1;
+             i++) {
+
+            for (int j = 0;
+                 j < sortedBuses.length - i - 1;
+                 j++) {
+
+                if (sortedBuses[j].getFare()
+                        > sortedBuses[j + 1].getFare()) {
+
+                    Bus temp =
+                            sortedBuses[j];
+
+                    sortedBuses[j] =
+                            sortedBuses[j + 1];
+
+                    sortedBuses[j + 1] =
+                            temp;
+                }
+            }
+        }
+
+        System.out.println();
+        System.out.println(
+                "========== BUSES SORTED BY FARE =========="
+        );
+
+        for (Bus bus : sortedBuses) {
+
+            System.out.println(
+                    bus.getBusId()
+                            + " | "
+                            + bus.getSource()
+                            + " -> "
+                            + bus.getDestination()
+                            + " | ₹"
+                            + bus.getFare()
+            );
+        }
+    }
+
+    // =========================================================
+    // INPUT METHODS
+    // =========================================================
+
+    static int readInt(String message) {
+
+        while (true) {
+
+            try {
+
+                System.out.print(message);
+
+                String input =
+                        sc.nextLine();
+
+                return Integer.parseInt(
+                        input.trim()
+                );
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Please enter a valid integer."
+                );
+            }
+        }
+    }
+
+    static double readDouble(String message) {
+
+        while (true) {
+
+            try {
+
+                System.out.print(message);
+
+                String input =
+                        sc.nextLine();
+
+                return Double.parseDouble(
+                        input.trim()
+                );
+
+            } catch (NumberFormatException e) {
+
+                System.out.println(
+                        "Please enter a valid number."
+                );
+            }
+        }
+    }
+
+    static String readString(String message) {
+
+        System.out.print(message);
+
+        return sc.nextLine().trim();
+    }
+
+    // =========================================================
+    // PERSON - ABSTRACT CLASS
+    // =========================================================
+
+    static abstract class Person {
+
+        private String name;
+        private String phone;
+
+        public Person(
+                String name,
+                String phone) {
+
+            this.name = name;
+            this.phone = phone;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public abstract void displayDetails();
+    }
+
+    // =========================================================
+    // PASSENGER CLASS
+    // =========================================================
+
+    static class Passenger extends Person {
+
+        private int age;
+        private String gender;
+
+        public Passenger(
+                String name,
+                String phone,
+                int age,
+                String gender) {
+
+            super(name, phone);
+
+            this.age = age;
+            this.gender = gender;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        @Override
+        public void displayDetails() {
+
+            System.out.println();
+            System.out.println("------------------------------");
+            System.out.println("Passenger Name : " + getName());
+            System.out.println("Phone          : " + getPhone());
+            System.out.println("Age            : " + age);
+            System.out.println("Gender         : " + gender);
+            System.out.println("------------------------------");
+        }
+
+        @Override
+        public String toString() {
+
+            return getName()
+                    + " | "
+                    + getPhone()
+                    + " | "
+                    + age
+                    + " | "
+                    + gender;
+        }
+    }
+
+    // =========================================================
+    // DRIVER CLASS
+    // =========================================================
+
+    static class Driver extends Person {
+
+        private String driverId;
+        private String licenseNumber;
+        private String assignedBusId;
+
+        public Driver(
+                String driverId,
+                String name,
+                String phone,
+                String licenseNumber,
+                String assignedBusId) {
+
+            super(name, phone);
+
+            this.driverId = driverId;
+            this.licenseNumber = licenseNumber;
+            this.assignedBusId = assignedBusId;
+        }
+
+        public String getDriverId() {
+            return driverId;
+        }
+
+        public String getLicenseNumber() {
+            return licenseNumber;
+        }
+
+        public String getAssignedBusId() {
+            return assignedBusId;
+        }
+
+        public void setAssignedBusId(
+                String assignedBusId) {
+
+            this.assignedBusId =
+                    assignedBusId;
+        }
+
+        @Override
+        public void displayDetails() {
+
+            System.out.println();
+            System.out.println("------------------------------");
+            System.out.println("Driver ID      : " + driverId);
+            System.out.println("Name           : " + getName());
+            System.out.println("Phone          : " + getPhone());
+            System.out.println("License Number : " + licenseNumber);
+            System.out.println("Assigned Bus   : " + assignedBusId);
+            System.out.println("------------------------------");
+        }
+    }
+
+    // =========================================================
+    // BUS CLASS
+    // =========================================================
+
+    static class Bus {
+
+        private String busId;
+        private String source;
+        private String destination;
+        private String busType;
+        private String departure;
+        private String arrival;
+        private double fare;
+
+        private final int totalSeats = 50;
+
+        // 2D array
+        private boolean[][] seats =
+                new boolean[5][10];
+
+        public Bus(
+                String busId,
+                String source,
+                String destination,
+                String busType,
+                String departure,
+                String arrival,
+                double fare,
+                int occupiedSeats) {
+
+            this.busId = busId;
+            this.source = source;
+            this.destination = destination;
+            this.busType = busType;
+            this.departure = departure;
+            this.arrival = arrival;
+            this.fare = fare;
+
+            int count = 0;
+
+            for (int i = 0;
+                 i < seats.length;
+                 i++) {
+
+                for (int j = 0;
+                     j < seats[i].length;
+                     j++) {
+
+                    if (count < occupiedSeats) {
+
+                        seats[i][j] = true;
+
+                        count++;
+                    }
+                }
+            }
+        }
+
+        public String getBusId() {
+            return busId;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public String getDestination() {
+            return destination;
+        }
+
+        public String getBusType() {
+            return busType;
+        }
+
+        public String getDeparture() {
+            return departure;
+        }
+
+        public String getArrival() {
+            return arrival;
+        }
+
+        public double getFare() {
+            return fare;
+        }
+
+        public int getTotalSeats() {
+            return totalSeats;
+        }
+
+        public int getOccupiedSeats() {
+
+            int count = 0;
+
+            for (int i = 0;
+                 i < seats.length;
+                 i++) {
+
+                for (int j = 0;
+                     j < seats[i].length;
+                     j++) {
+
+                    if (seats[i][j]) {
+                        count++;
+                    }
+                }
+            }
+
+            return count;
+        }
+
+        public int getAvailableSeats() {
+
+            return totalSeats
+                    - getOccupiedSeats();
+        }
+
+        public boolean isSeatBooked(
+                int seatNumber) {
+
+            if (seatNumber < 1 ||
+                    seatNumber > 50) {
+
+                return false;
+            }
+
+            int row =
+                    (seatNumber - 1) / 10;
+
+            int column =
+                    (seatNumber - 1) % 10;
+
+            return seats[row][column];
+        }
+
+        public boolean bookSeat(
+                int seatNumber) {
+
+            if (seatNumber < 1 ||
+                    seatNumber > 50) {
+
+                return false;
+            }
+
+            int row =
+                    (seatNumber - 1) / 10;
+
+            int column =
+                    (seatNumber - 1) % 10;
+
+            if (seats[row][column]) {
+
+                return false;
+            }
+
+            seats[row][column] = true;
+
+            return true;
+        }
+
+        public boolean cancelSeat(
+                int seatNumber) {
+
+            if (seatNumber < 1 ||
+                    seatNumber > 50) {
+
+                return false;
+            }
+
+            int row =
+                    (seatNumber - 1) / 10;
+
+            int column =
+                    (seatNumber - 1) % 10;
+
+            if (!seats[row][column]) {
+
+                return false;
+            }
+
+            seats[row][column] = false;
+
+            return true;
+        }
+
+        public void displaySeatLayout() {
+
+            System.out.println();
+            System.out.println(
+                    "========== SEAT LAYOUT =========="
+            );
+
+            System.out.println(
+                    "Bus ID: " + busId
+            );
+
+            System.out.println();
+
+            for (int i = 0;
+                 i < seats.length;
+                 i++) {
+
+                for (int j = 0;
+                     j < seats[i].length;
+                     j++) {
+
+                    int seatNumber =
+                            i * 10 + j + 1;
+
+                    if (seats[i][j]) {
+
+                        System.out.printf(
+                                "[X%02d] ",
+                                seatNumber
+                        );
+
+                    } else {
+
+                        System.out.printf(
+                                "[O%02d] ",
+                                seatNumber
+                        );
+                    }
+                }
+
+                System.out.println();
+            }
+
+            System.out.println();
+            System.out.println(
+                    "O = Available"
+            );
+
+            System.out.println(
+                    "X = Occupied"
+            );
+        }
+
+        public void displayDetails() {
+
+            System.out.println();
+            System.out.println(
+                    "------------------------------"
+            );
+
+            System.out.println(
+                    "Bus ID      : " + busId
+            );
+
+            System.out.println(
+                    "Route       : "
+                            + source
+                            + " -> "
+                            + destination
+            );
+
+            System.out.println(
+                    "Bus Type    : " + busType
+            );
+
+            System.out.println(
+                    "Departure   : " + departure
+            );
+
+            System.out.println(
+                    "Arrival     : " + arrival
+            );
+
+            System.out.println(
+                    "Fare        : ₹" + fare
+            );
+
+            System.out.println(
+                    "Total Seats : " + totalSeats
+            );
+
+            System.out.println(
+                    "Occupied    : "
+                            + getOccupiedSeats()
+            );
+
+            System.out.println(
+                    "Available   : "
+                            + getAvailableSeats()
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+    }
+
+    // =========================================================
+    // TICKET CLASS
+    // =========================================================
+
+    static class Ticket {
+
+        private String ticketId;
+        private Passenger passenger;
+        private String busId;
+        private int seatNumber;
+        private double amount;
+        private String status;
+
+        public Ticket(
+                String ticketId,
+                Passenger passenger,
+                String busId,
+                int seatNumber,
+                double amount) {
+
+            this.ticketId = ticketId;
+            this.passenger = passenger;
+            this.busId = busId;
+            this.seatNumber = seatNumber;
+            this.amount = amount;
+            this.status = "CONFIRMED";
+        }
+
+        public String getTicketId() {
+            return ticketId;
+        }
+
+        public String getBusId() {
+            return busId;
+        }
+
+        public int getSeatNumber() {
+            return seatNumber;
+        }
+
+        public double getAmount() {
+            return amount;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void cancel() {
+
+            status = "CANCELLED";
+        }
+
+        public void displayTicket() {
+
+            System.out.println();
+            System.out.println(
+                    "================================"
+            );
+
+            System.out.println(
+                    "        SMART RIDE INDIA"
+            );
+
+            System.out.println(
+                    "           BUS TICKET"
+            );
+
+            System.out.println(
+                    "================================"
+            );
+
+            System.out.println(
+                    "Ticket ID : " + ticketId
+            );
+
+            System.out.println(
+                    "Passenger : "
+                            + passenger.getName()
+            );
+
+            System.out.println(
+                    "Phone     : "
+                            + passenger.getPhone()
+            );
+
+            System.out.println(
+                    "Bus ID    : " + busId
+            );
+
+            System.out.println(
+                    "Seat No   : " + seatNumber
+            );
+
+            System.out.println(
+                    "Amount    : ₹" + amount
+            );
+
+            System.out.println(
+                    "Status    : " + status
+            );
+
+            System.out.println(
+                    "================================"
+            );
+        }
+
+        @Override
+        public String toString() {
+
+            return ticketId
+                    + " | "
+                    + passenger.getName()
+                    + " | Bus: "
+                    + busId
+                    + " | Seat: "
+                    + seatNumber
+                    + " | Amount: ₹"
+                    + amount
+                    + " | "
+                    + status;
+        }
+    }
+
+    // =========================================================
+    // COMPLAINT CLASS
+    // =========================================================
+
+    static class Complaint {
+
+        private String complaintId;
+        private String passengerName;
+        private String description;
+        private String status;
+
+        public Complaint(
+                String complaintId,
+                String passengerName,
+                String description) {
+
+            this.complaintId =
+                    complaintId;
+
+            this.passengerName =
+                    passengerName;
+
+            this.description =
+                    description;
+
+            this.status = "OPEN";
+        }
+
+        public String getComplaintId() {
+            return complaintId;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void resolve() {
+
+            status = "RESOLVED";
+        }
+
+        public void display() {
+
+            System.out.println();
+            System.out.println(
+                    "------------------------------"
+            );
+
+            System.out.println(
+                    "Complaint ID : "
+                            + complaintId
+            );
+
+            System.out.println(
+                    "Passenger    : "
+                            + passengerName
+            );
+
+            System.out.println(
+                    "Description  : "
+                            + description
+            );
+
+            System.out.println(
+                    "Status       : "
+                            + status
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+
+        @Override
+        public String toString() {
+
+            return complaintId
+                    + " | "
+                    + passengerName
+                    + " | "
+                    + description
+                    + " | "
+                    + status;
+        }
+    }
+
+    // =========================================================
+    // INCIDENT CLASS
+    // =========================================================
+
+    static class Incident {
+
+        private String incidentId;
+        private String busId;
+        private String description;
+        private String status;
+
+        public Incident(
+                String incidentId,
+                String busId,
+                String description) {
+
+            this.incidentId =
+                    incidentId;
+
+            this.busId =
+                    busId;
+
+            this.description =
+                    description;
+
+            this.status = "REPORTED";
+        }
+
+        public String getIncidentId() {
+            return incidentId;
+        }
+
+        public void resolve() {
+
+            status = "RESOLVED";
+        }
+
+        public void display() {
+
+            System.out.println();
+            System.out.println(
+                    "------------------------------"
+            );
+
+            System.out.println(
+                    "Incident ID : "
+                            + incidentId
+            );
+
+            System.out.println(
+                    "Bus ID      : "
+                            + busId
+            );
+
+            System.out.println(
+                    "Description : "
+                            + description
+            );
+
+            System.out.println(
+                    "Status      : "
+                            + status
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+
+        @Override
+        public String toString() {
+
+            return incidentId
+                    + " | "
+                    + busId
+                    + " | "
+                    + description
+                    + " | "
+                    + status;
+        }
+    }
+
+    // =========================================================
+    // MAINTENANCE CLASS
+    // =========================================================
+
+    static class Maintenance {
+
+        private String recordId;
+        private String busId;
+        private String maintenanceType;
+        private String description;
+        private boolean completed;
+
+        public Maintenance(
+                String recordId,
+                String busId,
+                String maintenanceType,
+                String description) {
+
+            this.recordId =
+                    recordId;
+
+            this.busId =
+                    busId;
+
+            this.maintenanceType =
+                    maintenanceType;
+
+            this.description =
+                    description;
+
+            this.completed = false;
+        }
+
+        public String getRecordId() {
+            return recordId;
+        }
+
+        public void complete() {
+
+            completed = true;
+        }
+
+        public void display() {
+
+            System.out.println();
+            System.out.println(
+                    "------------------------------"
+            );
+
+            System.out.println(
+                    "Record ID   : "
+                            + recordId
+            );
+
+            System.out.println(
+                    "Bus ID      : "
+                            + busId
+            );
+
+            System.out.println(
+                    "Type        : "
+                            + maintenanceType
+            );
+
+            System.out.println(
+                    "Description : "
+                            + description
+            );
+
+            System.out.println(
+                    "Status      : "
+                            + (completed
+                            ? "COMPLETED"
+                            : "PENDING")
+            );
+
+            System.out.println(
+                    "------------------------------"
+            );
+        }
+
+        @Override
+        public String toString() {
+
+            return recordId
+                    + " | "
+                    + busId
+                    + " | "
+                    + maintenanceType
+                    + " | "
+                    + description
+                    + " | "
+                    + (completed
+                    ? "COMPLETED"
+                    : "PENDING");
+        }
+    }
+}
